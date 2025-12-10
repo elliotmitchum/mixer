@@ -2,6 +2,8 @@ import { useState } from 'react'
 import mixbox from 'mixbox'
 import './App.css'
 
+const black = "#000000"
+
 // Helper function to convert hex to RGB array
 function hexToRgb(hex: string): [number, number, number] | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -34,6 +36,8 @@ type GridConfig = {
   ca: string;
   cb: string;
   cc: string;
+  cd?: string; // Optional CD color (opposite of CC)
+  cdStart?: number;
 };
 
 function App() {
@@ -53,18 +57,22 @@ function App() {
         cb: colorB,
         cc: '#FFFFFF'
       },
-
+      {
+        title: 'CA = User A, CB = User B, CC = Black',
+        ca: colorA,
+        cb: colorB,
+        cc: black
+      },
+      {
+        title: 'CA = User A, CB = Black, CC = White',
+        ca: colorA,
+        cb: black,
+        cc: '#FFFFFF'
+      },
       {
         title: 'CA = User B, CB = Black, CC = White',
         ca: colorB,
-        cb: '#000000',
-        cc: '#FFFFFF',
-      },
-
-      {
-        title: 'CA = Black, CB = User A, CC = White',
-        ca: '#000000',
-        cb: colorA,
+        cb: black,
         cc: '#FFFFFF'
       },
     ]
@@ -82,21 +90,31 @@ function App() {
     cbHex: string,
     ccHex: string,
     colRatio: number,
-    rowRatio: number
+    rowRatio: number,
+    cdHex?: string,
+    cdStart?: number
   ): string {
     const caRgb = hexToRgb(caHex)
     const cbRgb = hexToRgb(cbHex)
     const ccRgb = hexToRgb(ccHex)
 
-    if (!caRgb || !cbRgb || !ccRgb) return '#000000'
+    if (!caRgb || !cbRgb || !ccRgb) return black
 
     // First mix CA and CB based on column ratio
-    const abMix = mixbox.lerp(caRgb, cbRgb, colRatio)
-    if (!abMix) return '#000000'
+    let abMix = mixbox.lerp(caRgb, cbRgb, colRatio)
+    if (!abMix) return black
+
+    if (cdHex) {
+      const cdRatio = cdStart - rowRatio > 0 ? (cdStart - rowRatio) * 0.6 : 0
+      const cdRgb = hexToRgb(cdHex)
+      if (!cdRgb) return black
+      abMix = mixbox.lerp(abMix, cdRgb, cdRatio)
+      if (!abMix) return black
+    }
 
     // Then mix the result with CC based on row ratio
     const finalMix = mixbox.lerp(abMix, ccRgb, rowRatio)
-    if (!finalMix) return '#000000'
+    if (!finalMix) return black
 
     return rgbToHex(finalMix)
   }
@@ -165,7 +183,9 @@ function App() {
                         config.cb,
                         config.cc,
                         colRatio,
-                        rowRatio
+                        rowRatio,
+                        config.cd,
+                        config.cdStart
                       )
                       return (
                         <td key={ colIndex }>
