@@ -1,4 +1,4 @@
-declare module 'mixbox' {
+declare module "mixbox" {
   type RGBArray = [number, number, number] | [number, number, number, number];
   type RGBString = string;
   type RGBInput = RGBArray | RGBString;
@@ -14,8 +14,6 @@ declare module 'mixbox' {
     latentToFloatRgb(latent: number[]): number[] | undefined;
     linearFloatRgbToLatent(r: RGBInput, g?: number, b?: number): number[] | undefined;
     latentToLinearFloatRgb(latent: number[]): number[] | undefined;
-    glsl: string;
-    lutTexture: any;
   }
 
   const mixbox: Mixbox;
