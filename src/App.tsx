@@ -5,6 +5,16 @@ import './App.css'
 const black = "#000000"
 const white = "#ffffff"
 
+const popularCombinations = {
+  '': { name: 'Custom', colorA: '', colorB: '' },
+  'zorn': { name: 'Zorn', colorA: '#CC9933', colorB: '#E30022' },
+  'moonlight': { name: 'Moonlight', colorA: '#003153', colorB: '#483C32' },
+  'power': { name: 'Power', colorA: '#E32636', colorB: '#40826D' },
+  'blockbuster': { name: "Blockbuster", colorA: '#006064', colorB: '#F28C28' },
+  'sorcerer': { name: "Sorcerer", colorA: '#4B0082', colorB: '#CC9933' },
+  'botanical': { name: "Botanical", colorA: '#8E3A59', colorB: '#507d2a' }
+}
+
 // Helper function to convert hex to RGB array
 function hexToRgb(hex: string): [number, number, number] | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -44,10 +54,21 @@ type GridConfig = {
 function App() {
   const [colorA, setColorA] = useState('')
   const [colorB, setColorB] = useState('')
+  const [preset, setPreset] = useState('')
 
   const isValidA = isValidHex(colorA)
   const isValidB = isValidHex(colorB)
   const bothValid = isValidA && isValidB
+
+  const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPreset = e.target.value
+    setPreset(selectedPreset)
+    if (selectedPreset && popularCombinations[selectedPreset as keyof typeof popularCombinations]) {
+      const combo = popularCombinations[selectedPreset as keyof typeof popularCombinations]
+      setColorA(combo.colorA)
+      setColorB(combo.colorB)
+    }
+  }
 
   // Define the 6 grids
   const gridConfigs: GridConfig[] = bothValid
@@ -75,7 +96,7 @@ function App() {
         ca: colorB,
         cb: black,
         cc: white
-      },
+      }
     ]
     : []
 
@@ -126,12 +147,29 @@ function App() {
       <h1>Color Mixer</h1>
       <div className="inputs">
         <div className="input-group">
+          <label htmlFor="preset">Preset:</label>
+          <select
+            id="preset"
+            value={ preset }
+            onChange={ handlePresetChange }
+          >
+            { Object.entries(popularCombinations).map(([key, combo]) => (
+              <option key={ key } value={ key }>
+                { combo.name }
+              </option>
+            )) }
+          </select>
+        </div>
+        <div className="input-group">
           <label htmlFor="colorA">Colour A:</label>
           <input
             id="colorA"
             type="text"
             value={ colorA }
-            onChange={ (e) => setColorA(e.target.value) }
+            onChange={ (e) => {
+              setColorA(e.target.value)
+              setPreset('')
+            } }
             placeholder="#RRGGBB"
             className={ colorA && !isValidA ? 'invalid' : '' }
           />
@@ -142,7 +180,10 @@ function App() {
             id="colorB"
             type="text"
             value={ colorB }
-            onChange={ (e) => setColorB(e.target.value) }
+            onChange={ (e) => {
+              setColorB(e.target.value)
+              setPreset('')
+            } }
             placeholder="#RRGGBB"
             className={ colorB && !isValidB ? 'invalid' : '' }
           />
