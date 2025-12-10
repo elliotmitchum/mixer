@@ -3,7 +3,7 @@ import mixbox from 'mixbox'
 import './App.css'
 
 const black = "#000000"
-const white = "#EBE8DA"
+const white = "#ffffff"
 
 // Helper function to convert hex to RGB array
 function hexToRgb(hex: string): [number, number, number] | null {
