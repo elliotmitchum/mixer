@@ -11,8 +11,7 @@ const popularCombinations = {
   "moonlight": { name: "Moonlight", colorA: "#003153", colorB: "#483C32" },
   "power": { name: "Power", colorA: "#E32636", colorB: "#40826D" },
   "blockbuster": { name: "Blockbuster", colorA: "#006064", colorB: "#F28C28" },
-  "sorcerer": { name: "Sorcerer", colorA: "#4B0082", colorB: "#CC9933" },
-  "botanical": { name: "Botanical", colorA: "#8E3A59", colorB: "#507d2a" }
+  "sorcerer": { name: "Sorcerer", colorA: "#4B0082", colorB: "#CC9933" }
 };
 
 // Helper function to convert hex to RGB array
@@ -96,7 +95,23 @@ function App() {
         ca: colorB,
         cb: black,
         cc: white
-      }
+      },
+      {
+        title: "CA = Black, CB = White, CC = White, CD User A @ 0.2",
+        ca: black,
+        cb: white,
+        cc: white,
+        cd: colorA,
+        cdStart: 0.2
+      },
+      {
+        title: "CA = Black, CB = White, CC = White, CD User B @ 0.2",
+        ca: black,
+        cb: white,
+        cc: white,
+        cd: colorB,
+        cdStart: 0.2
+      },
     ]
     : [];
 
@@ -127,8 +142,9 @@ function App() {
     let abMix = mixbox.lerp(caRgb, cbRgb, colRatio);
     if (!abMix) return black;
 
-    if (cdHex && cdStart !== undefined) {
-      const cdRatio = cdStart - rowRatio > 0 ? (cdStart - rowRatio) * 0.6 : 0;
+    if (cdHex) {
+      const cdStartR = cdStart ?? 1;
+      const cdRatio = (cdStartR) > 0 ? (cdStartR) * 1 : 0;
       const cdRgb = hexToRgb(cdHex);
       if (!cdRgb) return black;
       abMix = mixbox.lerp(abMix, cdRgb, cdRatio);
