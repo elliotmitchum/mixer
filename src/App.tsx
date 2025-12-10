@@ -2,7 +2,7 @@ import { useState } from 'react'
 import mixbox from 'mixbox'
 import './App.css'
 
-const black = "#3B393A"
+const black = "#000000"
 const white = "#EBE8DA"
 
 // Helper function to convert hex to RGB array
