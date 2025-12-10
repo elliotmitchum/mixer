@@ -2,7 +2,8 @@ import { useState } from 'react'
 import mixbox from 'mixbox'
 import './App.css'
 
-const black = "#000000"
+const black = "#3B393A"
+const white = "#EBE8DA"
 
 // Helper function to convert hex to RGB array
 function hexToRgb(hex: string): [number, number, number] | null {
@@ -55,7 +56,7 @@ function App() {
         title: 'CA = User A, CB = User B, CC = White',
         ca: colorA,
         cb: colorB,
-        cc: '#FFFFFF'
+        cc: white
       },
       {
         title: 'CA = User A, CB = User B, CC = Black',
@@ -67,13 +68,13 @@ function App() {
         title: 'CA = User A, CB = Black, CC = White',
         ca: colorA,
         cb: black,
-        cc: '#FFFFFF'
+        cc: white
       },
       {
         title: 'CA = User B, CB = Black, CC = White',
         ca: colorB,
         cb: black,
-        cc: '#FFFFFF'
+        cc: white
       },
     ]
     : []
@@ -81,8 +82,9 @@ function App() {
   // Column ratios: CA, CA:CB 2:1, CA:CB 1:1, CA:CB 1:2, CB
   const columnRatios = [0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0]
 
-  // Row ratios: 100%, 75%, 50%, 25%, 5% (amount of CC)
-  const rowRatios = [0.0, 0.25, 0.5, 0.75, 0.95]
+  // Row ratios: 0:1, 1:3, 1:2, 1:1, 2:1, 3:1 (CC:base ratio)
+  const rowRatios = [0.0, 0.25, 1.0 / 3.0, 0.5, 2.0 / 3.0, 0.75]
+  const rowLabels = ['0:1', '1:3', '1:2', '1:1', '2:1', '3:1']
 
   // Calculate color for a cell
   function getCellColor(
@@ -104,7 +106,7 @@ function App() {
     let abMix = mixbox.lerp(caRgb, cbRgb, colRatio)
     if (!abMix) return black
 
-    if (cdHex) {
+    if (cdHex && cdStart !== undefined) {
       const cdRatio = cdStart - rowRatio > 0 ? (cdStart - rowRatio) * 0.6 : 0
       const cdRgb = hexToRgb(cdHex)
       if (!cdRgb) return black
@@ -167,15 +169,7 @@ function App() {
                 { rowRatios.map((rowRatio, rowIndex) => (
                   <tr key={ rowIndex }>
                     <td className="row-label">
-                      { rowIndex === 0
-                        ? '100%'
-                        : rowIndex === 1
-                          ? '75%'
-                          : rowIndex === 2
-                            ? '50%'
-                            : rowIndex === 3
-                              ? '25%'
-                              : '5%' }
+                      { rowLabels[rowIndex] }
                     </td>
                     { columnRatios.map((colRatio, colIndex) => {
                       const color = getCellColor(
