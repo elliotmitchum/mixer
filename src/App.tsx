@@ -11,7 +11,10 @@ const popularCombinations = {
   "moonlight": { name: "Moonlight", colorA: "#003153", colorB: "#483C32" },
   "power": { name: "Power", colorA: "#E32636", colorB: "#40826D" },
   "blockbuster": { name: "Blockbuster", colorA: "#006064", colorB: "#F28C28" },
-  "sorcerer": { name: "Sorcerer", colorA: "#4B0082", colorB: "#CC9933" }
+  "sorcerer": { name: "Sorcerer", colorA: "#4B0082", colorB: "#CC9933" },
+  "crimson-tide": { name: "Crimson Tide", colorA: "#8B283A", colorB: "#124740" },
+  "rust-reverie": { name: "Rust & Reverie", colorA: "#8A4022", colorB: "#8E3252" },
+  "sapphire-harvest": { name: "Sapphire Harvest", colorA: "#0047AB", colorB: "#D6A665" },
 };
 
 // Helper function to convert hex to RGB array
